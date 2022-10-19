@@ -44,15 +44,18 @@
 		int brojac = 0;
 		if (fp == NULL) {
 			printf("Nije pronadjena datotetka toga naziva.\n");
-			return 0;
+			return (-1);
 		}
 		  while (fgetc(fp) != '\n') {
 		    continue;
 		  }
-	for (c = getc(fp); c != EOF; c = getc(fp)) {
-		if (c == '\n')
-			brojac = brojac + 1;
+	while(fgetc(fp) != '\n'){
+		if(c=='\n')
+		{
+			brojac++;
+		}
 	}
+	fclose(fp);
 	printf("Upisano je %d studenata.\n", brojac);
 	return brojac;
 	}
