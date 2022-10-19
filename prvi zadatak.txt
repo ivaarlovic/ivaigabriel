@@ -1,0 +1,94 @@
+	#include <stdio.h>
+	#include <stdlib.h>
+	#include <string.h>
+
+	typedef struct
+	{
+	  char ime[50];
+	  char prezime[50];
+	  int bodovi;
+	  float relativni;
+
+	} student;
+
+	void UnosStud(int, student *, int);
+	void IspisStud(int, student *, int);
+	int BrojStud(FILE *);
+
+	int main()
+	{
+	  FILE *dat;
+	  int ukupno=0;
+	  int max;
+	  student *st;
+
+	  dat = fopen("studenti.txt", "r");
+	  ukupno=BrojStud(dat);
+
+	  st=(student*)malloc(ukupno*sizeof(student));
+
+	  printf("Unesi maksimalni broj bodova:\n");
+	  scanf("%d", &max);
+
+	  UnosStud(ukupno, st, max);
+	  IspisStud(ukupno, st, max);
+	  fclose(dat);
+
+	  return 0;
+  
+	}
+
+	int BrojStud(FILE *fp)
+	{	
+	  char c;
+		int brojac = 0;
+		if (fp == NULL) {
+			printf("Nije pronadjena datotetka toga naziva.\n");
+			return 0;
+		}
+		  while (fgetc(fp) != '\n') {
+		    continue;
+		  }
+	for (c = getc(fp); c != EOF; c = getc(fp)) {
+		if (c == '\n')
+			brojac = brojac + 1;
+	}
+	printf("Upisano je %d studenata.\n", brojac);
+	return brojac;
+	}
+
+	void UnosStud(int uk, student *stud, int max)
+	{	
+	  int i;
+	  FILE *fp;
+	  fp=fopen("studenti.txt", "r");
+
+	  while(fgetc(fp)!='\n')
+	    {
+	      continue;
+	    }
+  
+	  for(i=0;i<uk;i++)
+	    {
+	      fscanf(fp,"%s %s %d", stud[i].ime, stud[i].prezime, &stud[i].bodovi);
+
+	      stud[i].relativni =(float)stud[i].bodovi / max * 100;
+	    }
+
+	  fclose(fp);
+	    return;
+  
+	}
+
+	void IspisStud(int uk, student *stud, int max)
+	{
+	  int i;
+	
+	  for(i=0;i<uk;i++)
+	    {
+	      printf("%s\t%s\t%d\t%f\n", stud[i].ime, stud[i].prezime, stud[i].bodovi, stud[i].relativni);
+	    }
+
+	  return;
+	}
+
