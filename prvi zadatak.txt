@@ -49,11 +49,13 @@
 		  while (fgetc(fp) != '\n') {
 		    continue;
 		  }
-	while(fgetc(fp) != '\n'){
-		if(c=='\n')
+		  
+		while((c=fgetc(fp) != EOF)
 		{
+			if(c == '\n'){
 			brojac++;
-		}
+			}
+	
 	}
 	fclose(fp);
 	printf("Upisano je %d studenata.\n", brojac);
@@ -62,7 +64,7 @@
 
 	void UnosStud(int uk, student *stud, int max)
 	{	
-	  int i;
+	  int i=0;
 	  FILE *fp;
 	  fp=fopen("studenti.txt", "r");
 
@@ -73,7 +75,9 @@
   
 	  for(i=0;i<uk;i++)
 	    {
-	      fscanf(fp,"%s %s %d", stud[i].ime, stud[i].prezime, &stud[i].bodovi);
+		fscanf(fp," %s", stud[i].ime);
+		fscanf(fp, " %s", stud[i].prezime);
+		fscanf(fp, "%d", &stud[i].bodovi);
 
 	      stud[i].relativni =(float)stud[i].bodovi / max * 100;
 	    }
