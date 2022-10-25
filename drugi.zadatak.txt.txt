@@ -1,0 +1,135 @@
+#define _CRT_SECURE_NO_WARNINGS
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+
+struct _lista;
+typedef struct _lista* pozicija;
+typedef struct _lista
+{
+	char ime[50];
+	char prezime[50];
+	int godina;
+	pozicija next;
+} lista;
+
+int UnosP(pozicija);
+void UnesiPod(pozicija);
+int Ispis(pozicija);
+int UnosK(pozicija);
+pozicija PronadiPosljednji(pozicija);
+
+
+int main()
+{
+	char c = 0;
+	struct _lista head;
+	head.next = NULL;
+	char ime[50] = { 0 }; 
+	char prezime[50] = { 0 };
+	int godina = 0;
+
+	
+	while ((c != 'k') && (c != 'K'))
+	{
+		printf("\nOdaberi '1' za Unos elementa na pocetak liste:\nOdaberi '2' za ispis liste:\nOdaberi '3' za dodati na kraj liste:\n");
+		scanf(" %c", &c);
+		switch (c)
+		{
+		case '1':
+
+			UnosP(&head);
+			Ispis(head.next);
+			break;
+
+		case '2':
+			Ispis(head.next);
+			break;
+
+		case '3':
+			UnosK(&head);
+			break;
+
+		case 'k':
+		case 'K':
+			printf("\nKraj programa.\n");
+			break;
+		default:
+			printf("\nKrivi unos.\n");
+		}
+
+	}
+	return 0;
+
+	
+}
+
+int UnosP(pozicija p)
+{
+	pozicija q = NULL;
+	q = (pozicija)malloc(sizeof(struct _lista));
+	if (q == NULL)
+	{
+		return -1;
+	}
+	else
+	{
+		UnesiPod(q);
+		q->next = p->next;
+		p->next = q;
+	}
+	return 0;
+}
+
+void UnesiPod(pozicija p)
+{
+	printf("\nUnesi ime:\n");
+	scanf(" %s", p->ime);
+
+	printf("\nUnesi prezime:\n");
+	scanf(" %s", p->prezime);
+
+	printf("\nUnesi godinu rodenja:\n");
+	scanf("%d", &p->godina);
+
+	return;
+}
+
+int Ispis(pozicija p)
+{
+	if (p == NULL)
+	{
+		printf("\nNema elemenata. prazna lista.\n");
+		return -1;
+	}
+
+	else
+	{
+		while (p != NULL)
+		{
+			printf("\n%s %s %d\n", p->ime, p->prezime, p->godina);
+			p = p->next;
+		}
+
+	}
+	return 0;
+}
+
+pozicija PronadiPosljednji(pozicija p)
+{
+	while (p->next != NULL)
+	{
+		p = p->next;
+	}
+
+	return p;
+}
+
+int UnosK(pozicija p)
+{
+	pozicija zadnji = NULL;
+	zadnji = PronadiPosljednji(p);
+	UnesiPod(zadnji);
+	
+	return 0;
+}
