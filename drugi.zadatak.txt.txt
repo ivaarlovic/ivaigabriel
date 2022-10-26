@@ -1,3 +1,4 @@
+
 #define _CRT_SECURE_NO_WARNINGS
 #include <stdio.h>
 #include <stdlib.h>
@@ -17,24 +18,28 @@ int UnosP(pozicija);
 void UnesiPod(pozicija);
 int Ispis(pozicija);
 int UnosK(pozicija);
+int Pretrazi(pozicija);
+int Brisanje(pozicija);
 pozicija PronadiPosljednji(pozicija);
 
 
 int main()
 {
-	char c = 0;
+	int izbor = 0;
+	int element = 0;
 	struct _lista head;
 	head.next = NULL;
-	char ime[50] = { 0 }; 
+	char ime[50] = { 0 };
 	char prezime[50] = { 0 };
 	int godina = 0;
 
-	
-	while ((c != 'k') && (c != 'K'))
+
+	while (izbor != '0')
 	{
-		printf("\nOdaberi '1' za Unos elementa na pocetak liste:\nOdaberi '2' za ispis liste:\nOdaberi '3' za dodati na kraj liste:\n");
-		scanf(" %c", &c);
-		switch (c)
+		printf("\nOdaberi '1' za Unos elementa na pocetak liste:\nOdaberi '2' za ispis liste:\nOdaberi '3' za dodati na kraj liste:\nOdaberi '4' za pronalazak elementa u listi po prezimenu\n");
+		printf("Odaberi '5' za brisanje elementa\nOdaberi '0' za kraj programa\n");
+		scanf(" %c", &izbor);
+		switch (izbor)
 		{
 		case '1':
 
@@ -50,8 +55,15 @@ int main()
 			UnosK(&head);
 			break;
 
-		case 'k':
-		case 'K':
+		case '4':
+			Pretrazi(&head);
+			break;
+
+		case '5':
+			Brisanje(&head);
+			break; 
+
+		case '0':
 			printf("\nKraj programa.\n");
 			break;
 		default:
@@ -61,7 +73,7 @@ int main()
 	}
 	return 0;
 
-	
+
 }
 
 int UnosP(pozicija p)
@@ -130,6 +142,44 @@ int UnosK(pozicija p)
 	pozicija zadnji = NULL;
 	zadnji = PronadiPosljednji(p);
 	UnesiPod(zadnji);
-	
+
+	return 0;
+}
+
+int Pretrazi(pozicija p)
+{
+	p = p->next;
+	char TrazenoPrezime[50];
+	printf("Unesite trazeno prezime:\n");
+	scanf(" %s", &TrazenoPrezime);
+
+	while (p != NULL)
+	{
+		if (strcmp(TrazenoPrezime, p->prezime) == 0)
+		{
+			printf("Prezime je u listi\n");
+			return 0;
+		}
+		p = p->next;
+	}
+	printf("Prezime nije u listi");
+	return 0;
+}
+int Brisanje(pozicija p)
+{
+	int element = 0; 
+	lista* temp = NULL;
+	printf("Unesi koji se element brise\n");
+	scanf("%d", &element);
+
+	for(int i=0;i<(element-1);i++)
+	{
+		p = p->next;
+	}
+
+	temp = p->next;
+	p->next = temp->next;
+	free(temp);
+	printf("element je izbrisan\n");
 	return 0;
 }
