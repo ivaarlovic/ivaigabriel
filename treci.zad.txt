@@ -23,6 +23,7 @@ pozicija PronadiPosljednji(pozicija);
 int UnosIza(pozicija);
 int UnosIspred(pozicija);
 void UnosDat(pozicija);
+void IspisDat(pozicija);
 
 int main()
 {
@@ -38,7 +39,7 @@ int main()
 	while (izbor != '0')
 	{
 		printf("\nOdaberi '1' za Unos elementa na pocetak liste:\nOdaberi '2' za ispis liste:\nOdaberi '3' za dodati na kraj liste:\nOdaberi '4' za pronalazak elementa u listi po prezimenu\n");
-		printf("Odaberi '5' za brisanje elementa\nOdaberi '6' za dodavanje elementa iza odredenog elementa\nOdaberi '7' za dodavanje elemnta ispred odredenog elementa\nOdaberi '9' za unos u datoteku\nOdaberi '0' za kraj programa\n");
+		printf("Odaberi '5' za brisanje elementa\nOdaberi '6' za dodavanje elementa iza odredenog elementa\nOdaberi '7' za dodavanje elemnta ispred odredenog elementa\nOdaberi '8' za unos u datoteku\nOdaberi '9' za ispis datoteke\nOdaberi '0' za kraj programa\n");
 		scanf(" %c", &izbor);
 		switch (izbor)
 		{
@@ -72,10 +73,13 @@ int main()
 			UnosIspred(&head);
 			break;
 			
-		case '9':
+		case '8':
 			UnosDat(head.next);
 			break;
-
+			
+		case '9':
+			IspisDat(head.next);
+			break;
 		case '0':
 			printf("\nKraj programa.\n");
 			break;
@@ -255,5 +259,37 @@ void UnosDat(pozicija p)
 	fclose(fp);
 	return;
 }
+void IspisDat(pozicija p)
+{
+	pozicija q = NULL;
+	
+	int i = 0;
+	FILE* fp;
+	fp = fopen("st.txt", "r");
 
+	
+	
+	if (fp == NULL)
+	{
+		printf("GRESKA!Datoteka ne postoji.\n");
+
+	}
+
+	else
+	{
+		while(feof(fp) == 0)
+		{
+			q = (pozicija)malloc(sizeof(struct _lista));
+			fscanf(fp, "%s %s %d", q->ime, q->prezime, &q->godina);
+			printf("%s\t%s\t%d\n", q->ime, q->prezime, q->godina);
+			q->next = p->next;
+			p->next = q;
+			p = q;
+
+		}
+	
+	}
+	fclose(fp);
+	return;
+}
 
