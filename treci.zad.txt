@@ -22,7 +22,7 @@ int Brisanje(pozicija);
 pozicija PronadiPosljednji(pozicija);
 int UnosIza(pozicija);
 int UnosIspred(pozicija);
-
+void UnosDat(pozicija);
 
 int main()
 {
@@ -38,7 +38,7 @@ int main()
 	while (izbor != '0')
 	{
 		printf("\nOdaberi '1' za Unos elementa na pocetak liste:\nOdaberi '2' za ispis liste:\nOdaberi '3' za dodati na kraj liste:\nOdaberi '4' za pronalazak elementa u listi po prezimenu\n");
-		printf("Odaberi '5' za brisanje elementa\nOdaberi '6' za dodavanje elementa iza odredenog elementa\nOdaberi '7' za dodavanje elemnta ispred odredenog elementa\nOdaberi '0' za kraj programa\n");
+		printf("Odaberi '5' za brisanje elementa\nOdaberi '6' za dodavanje elementa iza odredenog elementa\nOdaberi '7' za dodavanje elemnta ispred odredenog elementa\nOdaberi '9' za unos u datoteku\nOdaberi '0' za kraj programa\n");
 		scanf(" %c", &izbor);
 		switch (izbor)
 		{
@@ -70,6 +70,10 @@ int main()
 
 		case '7':
 			UnosIspred(&head);
+			break;
+			
+		case '9':
+			UnosDat(head.next);
 			break;
 
 		case '0':
@@ -230,4 +234,26 @@ int UnosIspred(pozicija p)
 
 	UnesiPod(temp);
 }
+void UnosDat(pozicija p)
+{
+	FILE* fp;
+	fp = fopen("studenti.txt", "w");
+
+	if (fp == NULL)
+	{
+		printf("Greska!Datoteka ne postoji.\n");
+		return -1;
+	}
+	else
+	{
+		while (p != NULL)
+		{
+			fprintf(fp, "%s\t%s\t%d\n", p->ime, p->prezime, p->godina);
+			p = p->next;
+		}
+	}
+	fclose(fp);
+	return;
+}
+
 
