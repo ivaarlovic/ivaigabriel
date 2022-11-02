@@ -22,6 +22,7 @@ int Brisanje(pozicija);
 pozicija PronadiPosljednji(pozicija);
 int UnosIza(pozicija);
 int UnosIspred(pozicija);
+void Sort(pozicija);
 void UnosDat(pozicija);
 void IspisDat(pozicija);
 
@@ -39,7 +40,7 @@ int main()
 	while (izbor != '0')
 	{
 		printf("\nOdaberi '1' za Unos elementa na pocetak liste:\nOdaberi '2' za ispis liste:\nOdaberi '3' za dodati na kraj liste:\nOdaberi '4' za pronalazak elementa u listi po prezimenu\n");
-		printf("Odaberi '5' za brisanje elementa\nOdaberi '6' za dodavanje elementa iza odredenog elementa\nOdaberi '7' za dodavanje elemnta ispred odredenog elementa\nOdaberi '8' za unos u datoteku\nOdaberi '9' za ispis datoteke\nOdaberi '0' za kraj programa\n");
+		printf("Odaberi '5' za brisanje elementa\nOdaberi '6' za dodavanje elementa iza odredenog elementa\nOdaberi '7' za dodavanje elemnta ispred odredenog elementa\nOdaberi '8' za unos u datoteku\nOdaberi '9' za ispis datoteke\nOdaberi '10' za sortitanje liste \nOdaberi '0' za kraj programa\n");
 		scanf(" %c", &izbor);
 		switch (izbor)
 		{
@@ -79,6 +80,9 @@ int main()
 			
 		case '9':
 			IspisDat(head.next);
+			break;
+		case '10':
+			Sort(head.next);
 			break;
 		case '0':
 			printf("\nKraj programa.\n");
@@ -293,3 +297,32 @@ void IspisDat(pozicija p)
 	return;
 }
 
+void Sort(pozicija p) 
+{
+	pozicija q, prev_q, temp, end;
+
+	end = NULL;	
+	while (p->next != end) 
+	{
+		prev_q = p;
+		q = p->next;
+		while (q->next != end) 
+		{
+			if (strcmp(prev_q->prezime, q->prezime) < 0) 
+			{
+				temp = q->next;
+				prev_q->next = temp;
+				q->next = temp->next;
+				temp->next = q;
+
+				q = temp;
+			}
+
+			prev_q = q;
+			q = q->next;
+
+		}
+		end = q;
+	}
+	printf("lista je sortirana!");
+}
