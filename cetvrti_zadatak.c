@@ -145,15 +145,7 @@ int sortiraniUnos(pozicija element, pozicija head)
 	return EXIT_SUCCESS;
 }
 
-int izbrisi(pozicija tmp, pozicija head)
-{
-	pozicija temp = NULL;
-	temp = NadiPrije(head, tmp);
-	temp->next = tmp->next;
-	free(tmp);
 
-	return EXIT_SUCCESS;
-}
 
 pozicija NadiPrije(pozicija head, pozicija tmp)
 {
