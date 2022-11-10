@@ -138,24 +138,10 @@ int sortiraniUnos(pozicija element, pozicija head)
 	{
 		temp = temp->next;
 	}
-
-	if ((temp != NULL) && (element->eksp == temp->eksp))
-	{
-		if (temp->koef + element->koef)
-		{
-			temp->koef = temp->koef + element->koef;
-		}
-		else
-		{
-			izbrisi(temp, head);
-			free(element);
-		}
-	}
-	else {
-		prethodni = NadiPrije(head, temp);
-		UnesiIza(prethodni, element);
-	}
-
+	
+	prethodni = NadiPrije(head, temp);
+	UnesiIza(prethodni, element);
+	
 	return EXIT_SUCCESS;
 }
 
