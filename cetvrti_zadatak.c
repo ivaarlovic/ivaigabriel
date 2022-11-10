@@ -18,7 +18,7 @@ typedef struct _broj
 	pozicija next;
 }broj;
 
-int citanje(pozicija,pozicija, char*);
+int citanje(pozicija, pozicija, char*);
 int ispis(pozicija);
 int zbrajanje(pozicija, pozicija, pozicija);
 int mnozenje(pozicija, pozicija, pozicija);
@@ -35,9 +35,9 @@ int main()
 	pozicija pol1 = &Head1;
 	broj Head2 = { .koef = 0, .eksp = 0, .next = NULL };
 	pozicija pol2 = &Head2;
-	
-
-	char nazivDat[] = "prva.lista.txt";
+	char nazivDat[50];
+	printf("unesi ime datoteke:\n ");
+	scanf(" %s", nazivDat);
 	citanje(pol1, pol2, nazivDat);
 
 	printf("Prvi polinom:\n");
@@ -56,10 +56,12 @@ int main()
 	printf("\nZbroj polinoma:\n");
 	ispis(pol3->next);
 
-
+	mnozenje(pol1, pol2, pol4);
+	printf("\Mnozenje polinoma:\n");
+	ispis(pol4->next);
 	return 0;
 
-	
+
 }
 
 int citanje(pozicija p1, pozicija p2, char* naziv)
@@ -92,11 +94,11 @@ int unesiPolinom(char* buff, pozicija head)
 	int pomak = 0, koef = 0, eksp = 0, n = 0;
 	pozicija temp = NULL;
 
-	while (buff[pomak]!='\0')
+	while (buff[pomak] != '\0')
 	{
-		int result = sscanf(buff+pomak, " %d %d %n", &koef, &eksp, &n);
+		int result = sscanf(buff + pomak, " %d %d %n", &koef, &eksp, &n);
 		pomak += n;
-		
+
 
 		temp = stvori(koef, eksp);
 		if (!temp)
@@ -167,10 +169,10 @@ int izbrisi(pozicija tmp, pozicija head)
 	return EXIT_SUCCESS;
 }
 
-pozicija NadiPrije(pozicija head, pozicija s)
+pozicija NadiPrije(pozicija head, pozicija tmp)
 {
 	pozicija temp = head;
-	while (temp->next != s)
+	while (temp->next != tmp)
 	{
 		temp = temp->next;
 	}
@@ -178,10 +180,10 @@ pozicija NadiPrije(pozicija head, pozicija s)
 	return temp;
 }
 
-int UnesiIza(pozicija prev, pozicija s)
+int UnesiIza(pozicija prev, pozicija tmp)
 {
 	tmp->next = prev->next;
-	prev->next = s;
+	prev->next = tmp;
 
 	return EXIT_SUCCESS;
 }
@@ -203,7 +205,7 @@ int zbrajanje(pozicija p1, pozicija p2, pozicija zbroj)
 {
 	pozicija temp = NULL;
 	pozicija ostali = NULL;
-	while (p1!=NULL && p2!=NULL)
+	while (p1 && p2)
 	{
 		if (p1->eksp == p2->eksp)
 		{
@@ -225,26 +227,74 @@ int zbrajanje(pozicija p1, pozicija p2, pozicija zbroj)
 			p2 = p2->next;
 		}
 
-
-
 	}
-	if (p1!=NULL && p2 == NULL)
+	if (p1 && p2 == NULL)
 	{
-		while (p1->next!=NULL)
+		while (p1->next)
 		{
-			
+
 			ostali = stvori(p1->koef, p1->eksp);
 			sortiraniUnos(ostali, zbroj);
 			p1 = p1->next;
 
 		}
 	}
-	else if (p2!=NULL && p1 == NULL)
+	else if (p2 && p1 == NULL)
 	{
-		while (p2->next!=NULL)
+		while (p2->next)
 		{
 			ostali = stvori(p2->koef, p2->eksp);
 			sortiraniUnos(ostali, zbroj);
+			p2 = p2->next;
+		}
+	}
+	return EXIT_SUCCESS;
+}
+
+int mnozenje(pozicija p1, pozicija p2, pozicija umnozak)
+{
+	pozicija temp = NULL;
+	pozicija ostali = NULL;
+	while (p1 && p2)
+	{
+		if (p1->eksp == p2->eksp)
+		{
+			temp = stvori(p1->koef * p2->koef, p1->eksp);
+			sortiraniUnos(temp, umnozak);
+			p1 = p1->next;
+			p2 = p2->next;
+		}
+		else if ((p1->eksp) > (p2->eksp))
+		{
+			temp = stvori(p1->koef, p1->eksp);
+			sortiraniUnos(temp, umnozak);
+			p1 = p1->next;
+		}
+		else if ((p1->eksp) < (p2->eksp))
+		{
+			temp = stvori(p2->koef, p2->eksp);
+			sortiraniUnos(temp, umnozak);
+			p2 = p2->next;
+		}
+
+	}
+	if (p1 && p2 == NULL)
+	{
+		while (p1->next)
+		{
+
+			ostali = stvori(p1->koef, p1->eksp);
+			sortiraniUnos(ostali, umnozak);
+			p1 = p1->next;
+
+		}
+	}
+	else if (p2 && p1 == NULL)
+	{
+		while (p2->next)
+		{
+			ostali = stvori(p2->koef, p2->eksp);
+			sortiraniUnos(ostali, umnozak);
 			p2 = p2->next;
 		}
 	}
