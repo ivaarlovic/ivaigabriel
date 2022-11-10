@@ -167,10 +167,10 @@ int izbrisi(pozicija tmp, pozicija head)
 	return EXIT_SUCCESS;
 }
 
-pozicija NadiPrije(pozicija head, pozicija tmp)
+pozicija NadiPrije(pozicija head, pozicija s)
 {
 	pozicija temp = head;
-	while (temp->next != tmp)
+	while (temp->next != s)
 	{
 		temp = temp->next;
 	}
@@ -178,10 +178,10 @@ pozicija NadiPrije(pozicija head, pozicija tmp)
 	return temp;
 }
 
-int UnesiIza(pozicija prev, pozicija tmp)
+int UnesiIza(pozicija prev, pozicija s)
 {
 	tmp->next = prev->next;
-	prev->next = tmp;
+	prev->next = s;
 
 	return EXIT_SUCCESS;
 }
@@ -203,7 +203,7 @@ int zbrajanje(pozicija p1, pozicija p2, pozicija zbroj)
 {
 	pozicija temp = NULL;
 	pozicija ostali = NULL;
-	while (p1 && p2)
+	while (p1!=NULL && p2!=NULL)
 	{
 		if (p1->eksp == p2->eksp)
 		{
@@ -228,9 +228,9 @@ int zbrajanje(pozicija p1, pozicija p2, pozicija zbroj)
 
 
 	}
-	if (p1 && p2 == NULL)
+	if (p1!=NULL && p2 == NULL)
 	{
-		while (p1->next)
+		while (p1->next!=NULL)
 		{
 			
 			ostali = stvori(p1->koef, p1->eksp);
@@ -239,9 +239,9 @@ int zbrajanje(pozicija p1, pozicija p2, pozicija zbroj)
 
 		}
 	}
-	else if (p2 && p1 == NULL)
+	else if (p2!=NULL && p1 == NULL)
 	{
-		while (p2->next)
+		while (p2->next!=NULL)
 		{
 			ostali = stvori(p2->koef, p2->eksp);
 			sortiraniUnos(ostali, zbroj);
