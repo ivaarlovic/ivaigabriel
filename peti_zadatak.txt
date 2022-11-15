@@ -1,0 +1,119 @@
+#define _CRT_SECURE_NO_WARNINGS
+
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+
+#define MAX_INPUT_VALUE 1024
+
+typedef struct _lista* pozicija;
+struct _lista;
+
+typedef struct _lista
+{
+    int broj;
+    pozicija next;
+} lista;
+
+int Unos(pozicija);
+int pop(pozicija);
+int zbrajanje(pozicija);
+int mnozenje(pozicija);
+int oduzimanje(pozicija);
+
+
+
+int main() {
+    pozicija head;
+    head = (lista*)malloc(sizeof(lista));
+    head->next = NULL;
+    FILE* fp = NULL;
+    char operator[1];
+    int rez = 0;
+    int vrijednost = 0;
+    char ime_datoteke[MAX_INPUT_VALUE];
+    printf("Unesi ime datoteke:\n");
+    scanf(" %s", ime_datoteke);
+
+    fp = fopen(ime_datoteke, "r");
+
+    if (fp == NULL)
+    {
+        printf("Datoteka se nije otvorila.\n");
+        return -1;
+    }
+
+    char buffer[MAX_INPUT_VALUE];
+    fgets(buffer, MAX_INPUT_VALUE, fp);
+
+
+    for (int i = 0; i < strlen(buffer); i++) {
+        if (isdigit(buffer[i])) {
+            sscanf(buffer + i, " %d", &vrijednost);
+            Unos(head, vrijednost);
+            continue;
+        }
+
+        if (buffer[i] == '+')
+            zbrajanje(head);
+        else if (buffer[i] == '*')
+            mnozenje(head);
+        else if (buffer[i] == '-')
+            oduzimanje(head);
+    }
+
+    printf("\nRjesenje je %d", head->next->broj);
+
+    fclose(fp);
+    return 0;
+}
+
+int Unos(pozicija poz, int vrijednost)
+{
+    lista* temp = NULL;
+    temp = (lista*)malloc(sizeof(lista));
+
+    temp->next = poz->next;
+    poz->next = temp;
+    temp->broj = vrijednost; return 0;
+}
+
+int pop(pozicija poz) {
+    int br;
+    lista* temp = NULL;
+    temp = poz->next;
+    poz->next = temp->next;
+    br = temp->broj;
+    free(temp);
+
+    return br;
+}
+
+int zbrajanje(pozicija poz) {
+    int a = 0, b = 0;
+    a = pop(poz);
+    b = pop(poz);
+
+    Unos(poz, (a + b));
+
+    return 0;
+
+}
+int mnozenje(pozicija poz) {
+    int a = 0, b = 0;
+    a = pop(poz);
+    b = pop(poz);
+
+    Unos(poz, (a * b));
+
+    return 0;
+}
+int oduzimanje(pozicija poz) {
+    int a = 0, b = 0;
+    a = pop(poz);
+    b = pop(poz);
+
+    Unos(poz, (a - b));
+
+    return 0;
+}
