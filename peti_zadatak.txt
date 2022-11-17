@@ -28,7 +28,6 @@ int main() {
     head = (lista*)malloc(sizeof(lista));
     head->next = NULL;
     FILE* fp = NULL;
-    char operator[1];
     int rez = 0;
     int vrijednost = 0;
     char ime_datoteke[MAX_INPUT_VALUE];
