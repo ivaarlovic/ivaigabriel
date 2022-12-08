@@ -64,6 +64,7 @@ int main() {
     printf("\nRjesenje je %d", head->next->broj);
 
     fclose(fp);
+    free(head->next);
     return 0;
 }
 
