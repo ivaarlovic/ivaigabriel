@@ -28,7 +28,7 @@ pozicija promijeni(Stablo);
 int Push(pozicija, pozicija);
 Stablo izlaz(pozicija, Stablo);
 int ispis(Stablo);
-void brisi(Stablo);
+Stablo brisi(Stablo);
 
 
 int main()
@@ -94,7 +94,7 @@ int main()
 		}
 		else if (x == 5)
 		{
-			brisi(root.PrvoDijete);
+			root.PrvoDijete = brisi(root.PrvoDijete);
 			return -1;
 
 		}
@@ -268,15 +268,15 @@ int oslobodiS(pozicija p)
 	return 0;
 }*/
 
-void brisi(Stablo sadasnji)
+Stablo brisi(Stablo sadasnji)
 {
 	if(sadasnji == NULL)
 	{
-	return;
+	return NULL;
 	}
 	brisi(sadasnji->NextBrat);
 	brisi(sadasnji->PrvoDijete);
 	free(sadasnji);
-	return;
+	return NULL;
 }
 	
