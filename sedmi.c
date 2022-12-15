@@ -28,19 +28,19 @@ pozicija promijeni(Stablo);
 int Push(pozicija, pozicija);
 Stablo izlaz(pozicija, Stablo);
 int ispis(Stablo);
-int oslobodiD(Stablo);
-int oslobodiS(pozicija);
+void brisi(Stablo);
 
 
 int main()
 {
 	struct CvorStabla root = {.NextBrat = NULL, .PrvoDijete = NULL};
-	strcpy(root.ime, "C:");
+	
 
 	struct Stog head={.direktorij=NULL, .next=NULL};
 	pozicija p = &head;
 
 	Stablo sadasnji = &root;
+	strcpy(sadasnji->ime, "C:");
 	int x = 0;
 	char ime[MAX_DULJINA] = {0};
 	Stablo noviDir = NULL;
@@ -94,8 +94,8 @@ int main()
 		}
 		else if (x == 5)
 		{
-			oslobodiD(&root);
-			oslobodiS(&head);
+			brisi(root.PrvoDijete);
+			return -1;
 
 		}
 		else
@@ -229,7 +229,7 @@ int ispis(Stablo sadasnji)
 	return 0;
 }
 
-int oslobodiD(Stablo sadasnji)
+/*int oslobodiD(Stablo sadasnji)
 {
 	Stablo tempBrat= NULL;
 	Stablo tempDijete = NULL;
@@ -266,4 +266,17 @@ int oslobodiS(pozicija p)
 	}
 
 	return 0;
+}*/
+
+void brisi(Stablo sadasnji)
+{
+	if(sadasnji == NULL)
+	{
+	return;
+	}
+	brisi(sadasnji->NextBrat);
+	brisi(sadasnji->PrvoDijete);
+	free(sadasnji);
+	return;
 }
+	
