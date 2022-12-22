@@ -1,0 +1,332 @@
+#define _CRT_SECURE_NO_WARNINGS
+#include <stdio.h>
+#include <string.h>
+#include <stdlib.h>
+
+typedef struct cvor* poz;
+typedef struct red* poz_;
+
+typedef struct cvor {
+	int el;
+	poz lijevo;
+	poz desno;
+}cvor;
+
+typedef struct red {
+	poz clan;
+	poz next;
+}red;
+
+poz unos(poz, poz);
+poz inorder(poz);
+poz preorder(poz);
+poz postorder(poz);
+poz level(poz, poz_);
+poz StaviNaRed(poz_, poz);
+poz SkiniSaPocetkaReda(poz_);
+poz brisi(poz, int);
+poz pronadiNajmanji(poz);
+poz pronadiNajveci(poz);
+poz brisiSve(poz);
+poz traziElement(poz, int);
+int brisiRed(poz_);
+
+int main() {
+	cvor root;
+	poz poz_root = &root;
+	root.lijevo = NULL;
+	root.desno = NULL;
+	red head;
+	head.next = NULL;
+	char naredba = '1';
+	poz q = NULL;
+	int broj = -1;
+
+	int provjera_roota = -1;
+
+	while (naredba != '0')
+	{
+		printf("\nIzbornik\na)Unesi element \nb)inorder \nc)preorder \nd)postorder \ne)levelorder \nf)brisi \ng)pretrazi \n\n 0)Kraj programa "); +
+
+			printf("\nUnesi slovo: ");
+		scanf(" %c", &naredba);
+
+		switch (naredba)
+		{
+		case 'a':
+			if (provjera_roota == -1)
+			{
+				printf("Unesi element ");
+				scanf("%d", &broj);
+				root.el = broj;
+				provjera_roota = 0;
+			}
+
+			else {
+
+				q = (poz)malloc(sizeof(cvor));
+				q->lijevo = NULL;
+				q->desno = NULL;
+
+				if (q == NULL) {
+					printf("neuspjesna alokacija");
+					break;
+				}
+				printf("Unesi novi element ");
+				scanf("%d", &(q->el));
+
+				poz_root = unos(poz_root, q);
+			}
+			break;
+		case'b':
+
+			inorder(poz_root);
+			break;
+
+		case 'c':
+
+			preorder(poz_root);
+			break;
+
+		case 'd':
+			postorder(poz_root);
+			break;
+
+		case 'e':
+			level(poz_root, &head);
+			brisiRed(&head);
+			break;
+
+		case 'f':
+			printf("\nUnesi element koji zelis brisati: ");
+			scanf("%d", &broj);
+			brisi(poz_root, broj);
+			break;
+
+		case 'g':
+			printf("\nUnesi trazeni element: ");
+			scanf("%d", &broj);
+			traziElement(poz_root, broj);
+
+			break;
+
+		case '0':
+			brisiRed(&head);
+			brisiSve(poz_root);
+
+			break;
+
+		default:
+			printf("\nKrivi unos\n");
+		}
+
+
+	}
+	return 0;
+}
+
+poz unos(poz p, poz q) {
+	if (p == NULL) {
+		return q;
+	}
+	else if (p->el < q->el) {
+		p->desno = unos(p->desno, q);
+	}
+	else if (p->el > q->el) {
+		p->lijevo = unos(p->lijevo, q);
+	}
+	else {
+		free(q);
+	}
+	return p;
+}
+
+poz inorder(poz p) {
+	if (p == NULL) {
+		return 0;
+	}
+	inorder(p->lijevo);
+	printf("%d", (p->el));
+	inorder(p->desno);
+
+	return 0;
+}
+
+poz preorder(poz p) {
+	if (p == NULL) {
+		return 0;
+	}
+	printf("%d", (p->el));
+	inorder(p->lijevo);
+	inorder(p->desno);
+
+	return 0;
+}
+
+poz postorder(poz p) {
+	if (p == NULL) {
+		return 0;
+	}
+	inorder(p->lijevo);
+	inorder(p->desno);
+	printf("%d", (p->el));
+
+	return 0;
+}
+
+poz level(poz p, poz_ head) {
+	while (p != NULL) {
+
+		printf("%d", (p->el));
+
+
+		if (p->lijevo != NULL) {
+			StaviNaRed(head, p->lijevo);
+		}
+
+		if (p->desno != NULL) {
+			StaviNaRed(head, p->desno);
+		}
+
+		p = SkiniSaPocetkaReda(head);
+
+	}
+	return 0;
+}
+
+
+poz StaviNaRed(poz_ head, poz p)
+{
+	poz_ q = NULL;
+	q = (poz_)malloc(sizeof(red));
+	if (q == NULL)
+	{
+		printf("Neuspjesna alokacija");
+		return -1;
+	}
+
+	while (head->next != NULL)
+	{
+		head = head->next;
+	}
+
+	q->clan = p;
+	head->next = q;
+	q->next = NULL;
+
+	return (q->clan);
+}
+
+poz SkiniSaPocetkaReda(poz_ head) {
+	if (head->next == NULL)
+	{
+		return NULL;
+	}
+	else {
+		poz_ temp = NULL;
+		temp = head->next;
+		head->next = temp->next;
+		return(temp->clan);
+	}
+}
+
+poz brisi(poz p, int broj)
+{
+	if (p == NULL)
+	{
+		return NULL;
+	}
+
+	if (p->el < broj)
+	{
+		p->desno = brisi(p->desno, broj);
+	}
+
+	else if (p->el > broj)
+	{
+		p->lijevo = brisi(p->lijevo, broj);
+	}
+
+	else
+	{
+		if (p->lijevo)
+		{
+			poz temp = pronadiNajveci(p->lijevo);
+			p->el = temp->el;
+			p->lijevo = brisi(p->lijevo, temp->el);
+		}
+
+		else if (p->desno)
+		{
+			poz temp = pronadiNajmanji(p->desno);
+			p->el = temp->el;
+			p->desno = brisi(p->lijevo, temp->el);
+		}
+
+		else
+		{
+			free(p);
+			return NULL;
+		}
+	}
+
+	return p;
+}
+
+poz pronadiNajmanji(poz p) {
+	while (p->lijevo != NULL) {
+		p = p->lijevo;
+	}
+	return p;
+}
+
+poz pronadiNajveci(poz p) {
+	while (p->desno != NULL) {
+		p = p->desno;
+	}
+	return p;
+}
+
+poz brisiSve(poz p) {
+	if (p == NULL) {
+		return 0;
+	}
+	if (p->lijevo != NULL) {
+		brisiSve(p->lijevo);
+	}
+	if (p->desno != NULL) {
+		brisiSve(p->desno);
+	}
+
+	free(p);
+}
+
+poz traziElement(poz p, int element) {
+	while (p != NULL && p->el != element) {
+		if (element > p->el) {
+			p = p->desno;
+		}
+		if (element < p->el) {
+			p = p->lijevo;
+		}
+	}
+	if (p == NULL) {
+		printf("\nTraženi element nije u listi\n");
+	}
+	else {
+		printf("\nTraženi element je u listi i adresa mu je %p", p);
+	}
+	return 0;
+}
+int brisiRed(poz_ head)
+{
+	poz_ temp = NULL;
+	while (head->next != NULL)
+	{
+		temp = head->next;
+		head->next = temp->next;
+		free(temp);
+	}
+
+	return 0;
+}
