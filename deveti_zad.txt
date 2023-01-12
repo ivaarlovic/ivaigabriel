@@ -1,0 +1,278 @@
+#define _CRT_SECURE_NO_WARNINGS
+#include<stdio.h>
+#include<stdlib.h>
+#include<time.h>
+
+
+
+typedef struct cvor* poz;
+typedef struct red* poz_;
+
+typedef struct cvor {
+	int el;
+	poz lijevo;
+	poz desno;
+}cvor;
+
+typedef struct red {
+	poz clan;
+	poz_ next;
+}red;
+
+poz insert(poz, poz);
+int replace(poz p, poz_ head3, poz_ head2, int* suma);
+
+int suma_podstabla(poz, poz_, int*);
+
+int upisiUDatoteku(char[1000], poz, poz, poz_);
+
+int printInorder(poz, poz_);
+
+int dodajNaKraj(poz_, poz);
+poz skiniSaPocetka(poz_);
+
+poz Brisanje(poz);
+
+int main()
+{
+	srand(time(0));
+
+	cvor root;
+	poz poz_root = &root;
+	root.lijevo = NULL;
+	root.desno = NULL;
+
+	cvor root2;
+	poz poz_root2 = &root2;
+	root2.lijevo = NULL;
+	root2.desno = NULL;
+
+	int i = 0;
+	int suma = 0;
+	int tempBroj = 0;
+	int listaElemenata[10] = { 2, 5, 7, 8, 11, 1, 4, 2, 3, 7 };
+	char ime_datoteke[1000];
+
+	poz q = NULL;
+
+	red head;
+	red head2;
+	red head3;
+	head.next = NULL;
+	head2.next = NULL;
+	head3.next = NULL;
+
+	root.el = listaElemenata[0];
+
+
+	printf("Zadani brojevi su:\n");
+	for (i = 0; i < 10; i++)
+	{
+		printf("%d ", listaElemenata[i]);
+	}
+
+	for (i = 1; i < 10; i++)
+	{
+		q = (poz)malloc(sizeof(cvor));
+		q->lijevo = NULL;
+		q->desno = NULL;
+		if (q == NULL)
+		{
+			printf("Neuspjesna alokacija.");
+			return NULL;
+		}
+		(q->el) = listaElemenata[i];
+
+		poz_root = insert(poz_root, q);
+	}
+
+
+	replace(&root, &head3, &head2, &suma);
+	
+	printf("\nSlucajni brojevi su: \n");
+
+	for (i = 0; i < 10; i++)
+	{
+		tempBroj = (rand() % 78 + 12);
+		printf("%d ", tempBroj);
+		listaElemenata[i] = tempBroj;
+	}
+
+	root2.el = listaElemenata[0];
+
+	for (i = 1; i < 10; i++)
+	{
+		q = (poz)malloc(sizeof(cvor));
+		q->lijevo = NULL;
+		q->desno = NULL;
+		if (q == NULL)
+		{
+			printf("Neuspjesna alokacija.");
+			return 10;
+		}
+		(q->el) = listaElemenata[i];
+
+		poz_root2 = insert(poz_root2, q);
+	}
+
+	replace(&root2, &head3, &head2, &suma);
+
+	printf("\nUnesi ime datoteke koju zelis stvorit: ");
+	scanf(" %s", ime_datoteke);
+
+	if ((upisiUDatoteku(ime_datoteke, poz_root, poz_root2, &head)) == 1)
+	{
+		printf("Uneseno!\n");
+	}
+		return 0;
+}
+
+poz insert(poz p, poz q)
+{
+	if (p == NULL)
+	{
+		return q;
+	}
+
+	if (p->el > q->el)
+	{
+		p->desno = insert(p->desno, q);
+	}
+
+	else if (p->el <= q->el)
+	{
+		p->lijevo = insert(p->lijevo, q);
+	}
+
+	return p;
+}
+int replace(poz p, poz_ head3, poz_ head2, int* suma)
+{
+	while (p != NULL)
+	{
+		*suma = 0;
+		suma_podstabla(p, head2, suma);
+		p->el = ((*suma) - (p->el));
+
+		if (p->lijevo != NULL)
+		{
+			dodajNaKraj(head3, p->lijevo);
+		}
+
+		if (p->desno != NULL)
+		{
+			dodajNaKraj(head3, p->desno);
+		}
+
+		p = skiniSaPocetka(head3);
+
+	}
+
+	return 1;
+}
+
+int suma_podstabla(poz p, poz_ head, int* suma)
+{
+	while (p != NULL)
+	{
+		(*suma) += p->el;
+
+		if (p->lijevo != NULL)
+		{
+			dodajNaKraj(head, p->lijevo);
+		}
+
+		if (p->desno != NULL)
+		{
+			dodajNaKraj(head, p->desno);
+		}
+
+		p = skiniSaPocetka(head);
+
+	}
+
+	return 1;
+}
+
+int upisiUDatoteku(char ime_datoteke[1000], poz poz_root, poz poz_root2, poz_ head)
+{
+	int i = 0;
+	FILE* fp = NULL;
+	fp = fopen(ime_datoteke, "w");
+	if (fp == NULL)
+	{
+		printf("Neuspjesna alokacija.");
+		return 1;
+	}
+
+	printInorder(poz_root, head);
+
+	for (i = 0; i < 10; i++)
+	{
+		fprintf(fp, " %d", (skiniSaPocetka(head)->el));
+	}
+
+	fprintf(fp, "\n");
+
+	printInorder(poz_root2, head);
+	for (i = 0; i < 10; i++)
+	{
+		fprintf(fp, " %d", (skiniSaPocetka(head)->el));
+	}
+
+	fclose(fp);
+	return 1;
+}
+
+int printInorder(poz p, poz_ head)
+{
+	if (p == NULL)
+	{
+		return 1;
+	}
+
+	printInorder(p->lijevo, head);
+	dodajNaKraj(head, p);
+	printInorder(p->desno, head);
+
+	return 1;
+}
+
+poz skiniSaPocetka(poz_ head)
+{
+	if (head->next == NULL)
+	{
+		return NULL;
+	}
+
+	else
+	{
+		poz_ temp = NULL;
+		temp = head->next;
+		head->next = temp->next;
+		return (temp->clan);
+	}
+}
+
+int dodajNaKraj(poz_ head, poz p)
+{
+	poz_ q = NULL;
+	q = (poz_)malloc(sizeof(red));
+	if (q == NULL)
+	{
+		printf("Neusjpjesna alokacija.");
+		return 1;
+	}
+
+	while (head->next != NULL)
+	{
+		head = head->next;
+	}
+
+	q->clan = p;
+	head->next = q;
+	q->next = NULL;
+
+	return 1;
+}
+
