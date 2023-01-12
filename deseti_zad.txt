@@ -1,0 +1,98 @@
+#define _CRT_SECURE_NO_WARNIGNS
+
+#include<stdio.h>
+#include<string.h>
+#include<stdlib.h>
+
+/*a*/
+typedef struct lista_drzava* lista_d;
+typedef struct stablo_gradova* stablo_g;
+
+typedef struct lista_drzava
+{
+	char drzava[1000];
+	lista_d next;
+	lista_d pok_stablo;
+}lista_drzava;
+
+
+typedef struct stablo_gradova 
+{
+	char gradovi[1000];
+	int br_st;
+	stablo_g lijevo;
+	stablo_g desno;
+}stablo_gradova;
+
+lista_d sortirani_unos(lista_d);
+lista_d trazi(lista_d);
+lista_d brisanje(lista_d);
+lista_d traziPosljednjeg(lista_d);
+int citanjeIzDatoteke(char[1000], lista_d);
+
+int main() {
+
+	return 0;
+}
+
+int citanjeIzDatoteke(char ime_datoteke[1000], lista_d lista) {
+	char ime_datgr[1000];
+	FILE* fp = NULL;
+	fp = fopen(ime_datoteke, "r");
+
+	if (!fp) {
+		printf("Datoteka s imenom %s ne postoji\r\n", ime_datoteke);
+		return 0;
+	}
+
+	fscanf(fp, "%s %s", &lista->drzava, &ime_datgr);
+	fclose(ime_datoteke);
+}
+
+lista_d sortirani_unos(lista_d p) {
+	lista_d temp = NULL;
+	lista_d q = (lista_d)malloc(sizeof(lista_drzava));
+	q->next = NULL;
+	q->pok_stablo = NULL;
+
+	while (p->next != NULL) {
+		if (strcmp(p->drzava, p->next->drzava) < 0) {
+			p = p->next;
+		}
+	}
+	q->next = p->next;
+	p->next = q;
+}
+
+lista_d trazi(lista_d p) {
+	char drzava[1000];
+
+
+	printf("Unesi koju drzavu trazis:\n");
+	scanf(" %s", drzava[1000]);
+
+	while (p != NULL && p->drzava != drzava[1000]);
+	{
+		p = p->next;
+	}
+	if (p->next == NULL) {
+		printf("drzava nije u listi");
+		return NULL;
+	}
+	else {
+		return p;
+	}
+}
+
+lista_d traziPosljednjeg(lista_d p) {
+	while (p->next != NULL) {
+		p = p->next;
+	}
+}
+
+lista_d brisanje(lista_d p) {
+	while (p != NULL) {
+		traziPosljednjeg(p);
+		free(p);
+	}
+}
