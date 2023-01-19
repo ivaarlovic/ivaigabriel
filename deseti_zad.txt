@@ -1,81 +1,330 @@
-#define _CRT_SECURE_NO_WARNIGNS
+#define _CRT_SECURE_NO_WARNINGS
 
 #include<stdio.h>
 #include<string.h>
 #include<stdlib.h>
 
 /*a*/
+
+struct lista_drzava;
 typedef struct lista_drzava* lista_d;
 typedef struct stablo_gradova* stablo_g;
 
-typedef struct lista_drzava
-{
-	char drzava[1000];
-	lista_d next;
-	lista_d pok_stablo;
-}lista_drzava;
 
 
-typedef struct stablo_gradova 
+typedef struct stablo_gradova
 {
-	char gradovi[1000];
+	char grad[1000];
 	int br_st;
 	stablo_g lijevo;
 	stablo_g desno;
 }stablo_gradova;
 
-lista_d sortirani_unos(lista_d);
+typedef struct lista_drzava
+{
+	char drzava[1000];
+	lista_d next;
+	stablo_g pok_stablo;
+}lista_drzava;
+
+/*b*/
+struct lista_gradova;
+typedef struct lista_gradova* lista_g;
+typedef struct stablo_drzava* stablo_d;
+
+typedef struct lista_gradova {
+	char grad[1000];
+	int br_st;
+	lista_g next;
+}lista_gradova;
+
+typedef struct stablo_drzava
+{
+	char drzava[1000];
+	stablo_d lijevo;
+	stablo_d desno;
+	lista_g pok_lista;
+}stablo_drzava;
+/*a*/
+lista_d sortirani_unos_drzava(lista_d, char[1000], char[1000]);
 lista_d trazi(lista_d);
 lista_d brisanje(lista_d);
 lista_d traziPosljednjeg(lista_d);
-int citanjeIzDatoteke(char[1000], lista_d);
+stablo_g stvoriRoot(stablo_g, int, char[1000]);
+stablo_g dodajUStablo(stablo_g, stablo_g);
+stablo_g unosStabla(stablo_g, int, char[1000]);
+int ispisInorder(stablo_g, int);
+int ispis(lista_d);
+int brisanjeListe(lista_d);
+int brisanjeStabla(stablo_g);
+int pronadiPosljednjeg(lista_d);
+
+
+/*b*/
+
+lista_g unesiGradListe(lista_g, int, char[1000]);
+stablo_d unesiDrzavu(stablo_d, char[1000], char[1000]);
+stablo_d dodajUStablo2(stablo_d, stablo_d);
+int ispisStablaDrz(stablo_d, int );
+int ispisGradovaListe(stablo_d, int);
+int brisanjeListe2(lista_g);
+int brisanjeStabla2(stablo_d);
+int pronadiPosljednjeg2(lista_g);
 
 int main() {
+	/*a*/
+	char zadatak[1000];
+	struct lista_drzava head;
+	head.next = NULL;
+	head.pok_stablo = NULL;
+	strcpy(head.drzava, " ");
+	char ime_datoteke[1000] = "drzave.txt";
+	char ime_dat_drz[1000];
+	int broj_stanovnika;
+	char ime_drzave[1000];
+	char trazenaDrzava[1000];
+	int trazenBroj;
+	lista_d temp= NULL;
+	stablo_g p = NULL;
+	FILE* fp = NULL;
+	
+	/*b*/
+	stablo_d root;
+	root = (stablo_d)malloc(sizeof(stablo_drzava));
+	if (root == NULL) {
+		printf("neuspjesna alokacija");
+		return NULL;
+	}
+	root->lijevo = NULL;
+	root->desno = NULL;
+	struct lista_gradova head2;
+	head2.next = NULL;
+	root->pok_lista = &head2;
+
+	char ime_grada[1000];
+	int br_stanovnika;
+	FILE* fp2 = NULL;
+
+	fp = fopen(ime_datoteke, "r");
+
+	fscanf(fp, "%s %s", ime_drzave, ime_dat_drz);
+	strcpy(root->drzava, ime_drzave);
+
+	fp2 = fopen(ime_dat_drz, "r");
+
+	while (!feof(fp2))
+	{
+		fscanf(fp2, "%s %d", ime_grada, &br_stanovnika);
+
+		unesiGradListe(root->pok_lista, br_stanovnika, ime_grada);
+		
+	}
+
+
+	fclose(fp2);
+
+	while (!feof(fp)) 
+	{
+	
+		fscanf(fp, "%s %s", ime_drzave, ime_dat_drz);
+		unesiDrzavu(root, ime_drzave, ime_dat_drz);
+		
+	}
+
+	fclose(fp);
+	printf("\n%s root\n", root->lijevo->drzava);
+	printf("\n%s root\n", root->lijevo->pok_lista->next->grad);
+	ispisStablaDrz(root, 1);
+
+	/*a*/
+	/*
+		fp = fopen(ime_datoteke, "r");
+
+		if (!fp) {
+			printf("Datoteka s imenom %s ne postoji\r\n", ime_datoteke);
+			return 0;
+		}
+		
+		fscanf(fp, "%s %s", ime_drzave, ime_dat_drz);
+		sortirani_unos_drzava(&head, ime_drzave, ime_dat_drz);
+
+		
+		while (!feof(fp)) {
+			fscanf(fp, "%s %s", ime_drzave, ime_dat_drz);
+			sortirani_unos_drzava(&head, ime_drzave, ime_dat_drz);
+		}
+
+		fclose(fp);
+		ispis(head.next);
+		temp = trazi(head.next);
+		
+		printf("Unesi broj stanovnika: ");
+		scanf("%d", &trazenBroj);
+		p = temp->pok_stablo;
+
+		ispisInorder(p, trazenBroj);
+		
+	/*a*/
+
+	brisanjeListe(&head);
+	brisanjeStabla2(root);
 
 	return 0;
 }
 
-int citanjeIzDatoteke(char ime_datoteke[1000], lista_d lista) {
-	char ime_datgr[1000];
-	FILE* fp = NULL;
-	fp = fopen(ime_datoteke, "r");
-
-	if (!fp) {
-		printf("Datoteka s imenom %s ne postoji\r\n", ime_datoteke);
-		return 0;
-	}
-
-	fscanf(fp, "%s %s", &lista->drzava, &ime_datgr);
-	fclose(ime_datoteke);
-}
-
-lista_d sortirani_unos(lista_d p) {
-	lista_d temp = NULL;
+lista_d sortirani_unos_drzava(lista_d p, char ime_drzave[1000], char ime_dat_drz[1000]) {
+	FILE* fp;
+	char ime_grada[1000];
+	int br_stanovnika;
 	lista_d q = (lista_d)malloc(sizeof(lista_drzava));
+	if (q == NULL) {
+		printf("neuspjesna alokacija");
+		return NULL;
+	}
+	
 	q->next = NULL;
 	q->pok_stablo = NULL;
 
+	strcpy(q->drzava, ime_drzave);
+
 	while (p->next != NULL) {
-		if (strcmp(p->drzava, p->next->drzava) < 0) {
-			p = p->next;
+		if (strcmp(p->next->drzava, q->drzava) > 0) {
+			break;
 		}
+		p = p->next;
 	}
+
 	q->next = p->next;
 	p->next = q;
+
+	fp = fopen(ime_dat_drz, "r");
+	
+	if (!fp) {
+		printf("Datoteka s imenom %s ne postoji\r\n", ime_dat_drz);
+		return 0;
+	}
+
+	fscanf(fp, "%s %d", ime_grada, &br_stanovnika);
+	stvoriRoot(q, br_stanovnika, ime_grada);
+
+	while (!feof(fp)) {
+		fscanf(fp, "%s %d", ime_grada, &br_stanovnika);
+		unosStabla(q->pok_stablo, br_stanovnika, ime_grada);
+		
+	}
+	fclose(fp);
+	return 0;
+}
+
+	
+stablo_g unosStabla(stablo_g root, int br_stanovnika, char ime_grada[1000]) {
+	stablo_g novi_grad = NULL;
+	novi_grad = (stablo_g)malloc(sizeof(stablo_gradova));
+	if (novi_grad == NULL) {
+		printf("neuspjesna alokacija");
+		return 0;
+	}
+	
+	novi_grad->desno = NULL;
+	novi_grad->lijevo = NULL;
+	novi_grad->br_st = br_stanovnika;
+	
+	strcpy(novi_grad->grad, ime_grada);
+	root = dodajUStablo(root, novi_grad);
+	return 0;
+}
+
+stablo_g stvoriRoot(lista_d head, int br_stanovnika, char ime_grada[1000]) {
+	
+	stablo_g root;
+	root = (stablo_g)malloc(sizeof(stablo_gradova));
+	if (root == NULL) {
+		printf("neuspjesna alokacija");
+		return 0;
+	}
+	root->lijevo = NULL;
+	root->desno = NULL;
+	root->br_st = br_stanovnika;
+	
+	strcpy(root->grad, ime_grada);
+
+	head->pok_stablo = root;
+	return 0;
+}
+/*
+lista_d traziPosljednjeg(lista_d p) {
+	while (p->next != NULL) {
+		p = p->next;
+	}
+	return 0;
+}
+
+lista_d brisanje(lista_d p) {
+	while (p != NULL) {
+		traziPosljednjeg(p);
+		free(p);
+	}
+	return 0;
+}
+*/
+stablo_g dodajUStablo(stablo_g p, stablo_g q) {
+	if (p == NULL) {
+		return q;
+	}
+	else if (q->br_st < p->br_st) {
+		p->desno = dodajUStablo(p->desno, q);
+	}
+	else if (q->br_st > p->br_st) {
+		p->lijevo = dodajUStablo(p->lijevo, q);
+	}
+	else if (strcmp(q->grad, p->grad) < 0) {
+		p->desno = dodajUStablo(p->desno, q);
+	}
+	else if (strcmp(q->grad, p->grad) > 0) {
+		p->lijevo = dodajUStablo(p->lijevo, q);
+	}
+	else {
+		printf("Grad je vec unesen");
+	}
+	return p;
+}
+
+int ispisInorder(stablo_g root, int br)
+{
+	if (root == NULL)
+	{
+		return 1;
+	}
+	ispisInorder(root->lijevo, br);
+	if (root->br_st > br)
+	{
+		printf("%s %d\n", root->grad, root->br_st);
+	}
+	ispisInorder(root->desno, br);
+
+	return 1;
+}
+
+int ispis(lista_d head) {
+	stablo_g root = NULL;
+	while (head != NULL) {
+		printf("\n%s\n", head->drzava);
+		root = head->pok_stablo;
+		ispisInorder(root, 1);
+		head = head->next;
+	}
+	return 0;
 }
 
 lista_d trazi(lista_d p) {
 	char drzava[1000];
-
-
 	printf("Unesi koju drzavu trazis:\n");
-	scanf(" %s", drzava[1000]);
-
-	while (p != NULL && p->drzava != drzava[1000]);
+	scanf("%s", drzava);
+	while (p != NULL && strcmp(p->drzava, drzava)!=0)
 	{
 		p = p->next;
 	}
-	if (p->next == NULL) {
+	if (p == NULL) {
 		printf("drzava nije u listi");
 		return NULL;
 	}
@@ -84,15 +333,172 @@ lista_d trazi(lista_d p) {
 	}
 }
 
-lista_d traziPosljednjeg(lista_d p) {
-	while (p->next != NULL) {
-		p = p->next;
+/*b*/
+
+lista_g unesiGradListe(lista_g pok, int br_stanovnika, char ime_grada[1000]) {
+	lista_g el = NULL;
+
+	el = (lista_g)malloc(sizeof(lista_gradova));
+	if (el == NULL) {
+		printf("neuspjesno alocirano");
+		return NULL;
 	}
+
+	el->next = NULL;
+	el->br_st = br_stanovnika;
+	strcpy(el->grad, ime_grada);
+
+	
+
+	while (pok->next != NULL) {
+		if (pok->next->br_st < el->br_st) {
+			break;
+		}
+		pok = pok->next;
+	}
+
+	el->next = pok->next;
+	pok->next = el;
+
+	return 0;
 }
 
-lista_d brisanje(lista_d p) {
-	while (p != NULL) {
-		traziPosljednjeg(p);
-		free(p);
+stablo_d unesiDrzavu(stablo_d root, char ime_drzave[1000], char ime_dat_drz[1000]) {
+	
+	int br_stanovnika;
+	char ime_grada[1000];
+	stablo_d nova_drz = NULL;
+	nova_drz = (stablo_d)malloc(sizeof(stablo_drzava));
+	if (nova_drz == NULL) {
+		printf("neuspjesna alokacija");
+		return 0;
 	}
+	
+	nova_drz->desno = NULL;
+	nova_drz->lijevo = NULL;
+	struct lista_gradova head;
+	head.next = NULL;
+	nova_drz->pok_lista = &head;
+
+
+	strcpy(nova_drz->drzava, ime_drzave);
+	printf("\n%s", nova_drz);
+	root= dodajUStablo2(root, nova_drz);
+	
+	FILE* fp = NULL;
+	fp = fopen(ime_dat_drz, "r");
+
+	while (!feof(fp))
+	{
+		fscanf(fp, "%s %d", ime_grada, &br_stanovnika);
+		if (strcmp(nova_drz->drzava, ime_drzave) == 0) {
+			unesiGradListe(nova_drz->pok_lista, br_stanovnika, ime_grada);
+		}
+		}
+
+	fclose(fp);
+
+	return 0;
+}
+
+
+stablo_d dodajUStablo2(stablo_d p, stablo_d q) {
+
+	if (p == NULL) {
+		return q;
+	}
+	else if (strcmp(p->drzava, q->drzava) < 0) {
+		p->desno = dodajUStablo2(p->desno, q);
+	}
+	else if (strcmp(p->drzava, q->drzava) > 0) {
+		p->lijevo = dodajUStablo2(p->lijevo, q);
+	}
+	else {
+		printf("Drzava je vec unesena");
+	}
+	return p;
+
+}
+
+int ispisStablaDrz(stablo_d root, int br)
+{
+	if (root == NULL)
+	{
+		return 1;
+	}
+	ispisStablaDrz(root->lijevo, br);
+	printf("\n%s\n", root->drzava);
+	ispisGradovaListe(root, 1);
+
+	ispisStablaDrz(root->desno, br);
+
+	return 1;
+}
+
+int ispisGradovaListe(stablo_d root, int br) {
+
+	while (root->pok_lista->next != NULL) {
+		
+		printf("\n%s\n", root->pok_lista->next->grad);
+		root->pok_lista = root->pok_lista->next;
+	}
+	return 0;
+
+}
+
+int brisanjeListe(lista_d head) {
+	lista_d temp = head;
+	while (head->next != NULL) {
+		temp = pronadiPosljednjeg(head);
+		brisanjeStabla(temp->pok_stablo);
+		free(temp);
+	}
+	return 0;
+}
+
+int brisanjeStabla(stablo_g root) {
+	if (root == NULL) {
+		return 0;
+	}
+	brisanjeStabla(root->lijevo);
+	brisanjeStabla(root->desno);
+
+	free(root);
+	return 0;
+}
+
+int pronadiPosljednjeg(lista_d head) {
+	while (head->next != NULL){
+		head = head->next;
+	}
+	return 0;
+}
+
+int brisanjeStabla2(stablo_d root) {
+	if (root == NULL) {
+		return 0;
+	}
+	brisanjeStabla2(root->lijevo);
+	brisanjeStabla2(root->desno);
+
+	brisanjeListe2(root->pok_lista);
+	free(root);
+
+	return 0;
+}
+
+int brisanjeListe2(lista_g head) {
+	lista_g temp = head;
+	while (head->next != NULL) {
+		temp = pronadiPosljednjeg2(head);
+		free(temp);
+	}
+	return 0;
+}
+
+int pronadiPosljednjeg2(lista_g head) {
+	while (head->next != NULL) {
+		head = head->next;
+	}
+	return 0;
 }
